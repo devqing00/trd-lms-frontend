@@ -35,6 +35,19 @@ import {
   enrollInCourse,
 } from "@/lib/mock-data";
 import type { Course, Enrollment, TestAttempt, ContentItem } from "@/lib/types";
+import {
+  APPLICATION_FORM_FEE,
+  ENROLLMENT_POLICY,
+  CONTACT_PHONES,
+  AVAILABLE_FACILITIES,
+  SPECIAL_CLASS_MIN_STUDENTS,
+  SPECIAL_CLASS_MAX_STUDENTS,
+} from "@/lib/types";
+
+/** Format Naira */
+function formatNaira(amount: number): string {
+  return `\u20A6${amount.toLocaleString()}`;
+}
 
 const CONTENT_ICONS: Record<string, React.ElementType> = {
   pdf: FileText,
@@ -307,6 +320,86 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
           </div>
         </Card>
       </div>
+
+      {/* Pricing */}
+      <Card className="p-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-text-tertiary text-xs">Course Fee</p>
+            <p className="text-accent-blue text-2xl font-bold">{formatNaira(course.pricing.fee)}</p>
+          </div>
+          {course.pricing.specialFee && (
+            <div>
+              <p className="text-text-tertiary text-xs">Special Class (3–5 students)</p>
+              <p className="text-accent-purple text-lg font-bold">
+                {formatNaira(course.pricing.specialFee)}
+              </p>
+            </div>
+          )}
+          {course.pricing.cohortFee && (
+            <div>
+              <p className="text-text-tertiary text-xs">Cohort Fee</p>
+              <p className="text-accent-green text-lg font-bold">
+                {formatNaira(course.pricing.cohortFee)}
+              </p>
+            </div>
+          )}
+          <div>
+            <p className="text-text-tertiary text-xs">Application Form</p>
+            <p className="text-text-primary text-sm font-semibold">
+              {formatNaira(APPLICATION_FORM_FEE)}
+            </p>
+          </div>
+        </div>
+        {course.topics && course.topics.length > 0 && (
+          <div className="border-border-default mt-3 flex flex-wrap gap-1.5 border-t pt-3">
+            <span className="text-text-tertiary text-xs">Topics:</span>
+            {course.topics.map((topic) => (
+              <Badge key={topic} variant="default" className="text-xs">
+                {topic}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Enrollment Information */}
+      <Card className="p-4">
+        <h3 className="text-text-primary mb-3 text-sm font-semibold">Enrollment Information</h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="border-border-default rounded-xl border-2 p-3">
+            <p className="text-text-tertiary text-xs font-medium uppercase">Enrollment Policy</p>
+            <p className="text-text-primary mt-1 text-sm">{ENROLLMENT_POLICY}</p>
+          </div>
+          <div className="border-border-default rounded-xl border-2 p-3">
+            <p className="text-text-tertiary text-xs font-medium uppercase">Special Class</p>
+            <p className="text-text-primary mt-1 text-sm">
+              {SPECIAL_CLASS_MIN_STUDENTS}–{SPECIAL_CLASS_MAX_STUDENTS} students per group
+            </p>
+          </div>
+          <div className="border-border-default rounded-xl border-2 p-3">
+            <p className="text-text-tertiary text-xs font-medium uppercase">Contact</p>
+            <div className="mt-1 flex flex-wrap gap-2">
+              {CONTACT_PHONES.map((phone) => (
+                <a
+                  key={phone}
+                  href={`tel:${phone.replace(/-/g, "")}`}
+                  className="text-accent-blue text-sm hover:underline"
+                >
+                  {phone}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="border-border-default rounded-xl border-2 p-3">
+            <p className="text-text-tertiary text-xs font-medium uppercase">Facilities</p>
+            <p className="text-text-primary mt-1 text-sm">
+              {AVAILABLE_FACILITIES.slice(0, 3).join(", ")}
+              {AVAILABLE_FACILITIES.length > 3 && ` +${AVAILABLE_FACILITIES.length - 3} more`}
+            </p>
+          </div>
+        </div>
+      </Card>
 
       {/* Capacity bar */}
       <Card className="p-4">

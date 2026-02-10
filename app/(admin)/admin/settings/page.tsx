@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { EmailTemplateManager } from "@/components/admin/email-templates";
 
 export default function SettingsPage() {
   // General
@@ -244,6 +245,11 @@ export default function SettingsPage() {
             />
           </CardContent>
         </Card>
+      </div>
+
+      {/* Email Templates */}
+      <div className="mt-6">
+        <EmailTemplateManager />
       </div>
     </div>
   );

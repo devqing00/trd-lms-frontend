@@ -23,6 +23,7 @@ import {
   updateCourse,
   deleteCourse,
   fetchEnrollments,
+  updateEnrollmentStatus,
   fetchWaitlist,
   promoteWaitlistEntry,
   removeWaitlistEntry,
@@ -178,6 +179,20 @@ export function useEnrollments(filters: FilterConfig & { courseId?: string }) {
   return useQuery({
     queryKey: queryKeys.enrollments(filters),
     queryFn: () => fetchEnrollments(filters),
+  });
+}
+
+export function useUpdateEnrollmentStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (params: {
+      enrollmentId: string;
+      status: "enrolled" | "completed" | "cancelled";
+    }) => updateEnrollmentStatus(params.enrollmentId, params.status),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["enrollments"] });
+      qc.invalidateQueries({ queryKey: ["dashboard-stats"] });
+    },
   });
 }
 

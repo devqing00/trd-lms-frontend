@@ -53,12 +53,20 @@ export interface UserUpdatePayload {
 
 // --- Course ---
 
+export interface CoursePricing {
+  fee: number; // Standard fee in Naira
+  cohortFee?: number; // Cohort class fee (min 3, max 5 students)
+  specialFee?: number; // Special class package fee
+}
+
 export interface Course extends Timestamps {
   id: string;
   title: string;
   description: string;
   category: string;
-  duration: string; // e.g. "3 Days"
+  duration: string; // e.g. "3 months", "5 weeks"
+  topics?: string[]; // Key topics covered
+  pricing: CoursePricing;
   venue: {
     address: string;
     room: string;
@@ -95,6 +103,8 @@ export interface CourseCreatePayload {
   description: string;
   category: string;
   duration: string;
+  topics?: string[];
+  pricing: CoursePricing;
   venue: {
     address: string;
     room: string;
@@ -242,6 +252,20 @@ export interface ApiError {
   code: string;
   statusCode: number;
 }
+
+// --- Platform Constants ---
+
+export const APPLICATION_FORM_FEE = 2000; // ₦2,000
+export const SPECIAL_CLASS_MIN_STUDENTS = 3;
+export const SPECIAL_CLASS_MAX_STUDENTS = 5;
+export const ENROLLMENT_POLICY =
+  "Enrollment of students is monthly — Class begins at the beginning of a new month.";
+export const CONTACT_PHONES = ["0803-302-7479", "0802-924-8172", "0806-273-3470"];
+export const AVAILABLE_FACILITIES = [
+  "State-of-the-art computers",
+  "Conducive environment",
+  "Seasoned instructors",
+];
 
 // --- Table/Filtering ---
 

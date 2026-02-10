@@ -67,6 +67,7 @@ export default function QuestionBankPage() {
   const [tagFilter, setTagFilter] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [form, setForm] = useState<Omit<Question, "id">>({
     courseId: "",
     text: "",
@@ -177,11 +178,17 @@ export default function QuestionBankPage() {
   }
 
   function handleDelete(id: string) {
-    if (confirm("Delete this question?")) {
-      deleteQuestion.mutate(id, {
-        onSuccess: () => toast.success("Question deleted"),
-      });
-    }
+    setDeleteTarget(id);
+  }
+
+  function confirmDelete() {
+    if (!deleteTarget) return;
+    deleteQuestion.mutate(deleteTarget, {
+      onSuccess: () => {
+        toast.success("Question deleted");
+        setDeleteTarget(null);
+      },
+    });
   }
 
   function updateOption(index: number, text: string) {
@@ -535,6 +542,31 @@ export default function QuestionBankPage() {
               disabled={!isFormValid || createQuestion.isPending || updateQuestion.isPending}
             >
               {editingQuestion ? "Save Changes" : "Add Question"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <Dialog open={!!deleteTarget} onOpenChange={(v) => !v && setDeleteTarget(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete Question</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this question? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteTarget(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              className="bg-accent-red hover:bg-accent-red/90"
+              onClick={confirmDelete}
+              disabled={deleteQuestion.isPending}
+            >
+              {deleteQuestion.isPending ? "Deleting..." : "Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>

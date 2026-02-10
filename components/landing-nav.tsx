@@ -6,7 +6,6 @@ import { GraduationCap, ArrowRight, Menu, X, Search, ChevronDown } from "lucide-
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { CommandSearch, SearchTrigger } from "@/components/ui/command-search";
-import { NotificationBell } from "@/components/notification-bell";
 
 const navLinks = [
   { label: "Courses", href: "#categories" },
@@ -127,7 +126,6 @@ export function LandingNav() {
           </div>
 
           <SearchTrigger onClick={() => setSearchOpen(true)} />
-          <NotificationBell />
           <ThemeToggle />
 
           {/* Auth buttons — hide on small tablets for space, show md+ */}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, MapPin, Users, Clock, BookOpen } from "lucide-react";
+import { ArrowLeft, Save, MapPin, Users, Clock, BookOpen, Banknote, Tag } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -31,7 +31,21 @@ const CATEGORIES = [
   "Professional Development",
 ];
 
-const DURATIONS = ["1 Day", "2 Days", "3 Days", "5 Days", "1 Week", "2 Weeks"];
+const DURATIONS = [
+  "1 Day",
+  "2 Days",
+  "3 Days",
+  "5 Days",
+  "1 Week",
+  "2 Weeks",
+  "4 Weeks",
+  "5 Weeks",
+  "8 Weeks",
+  "1 month",
+  "2 months",
+  "3 months",
+  "4 months",
+];
 
 export default function NewCoursePage() {
   const router = useRouter();
@@ -46,6 +60,10 @@ export default function NewCoursePage() {
     venueRoom: "",
     capacity: 20,
     waitlistCap: 10,
+    fee: 0,
+    cohortFee: 0,
+    specialFee: 0,
+    topicsText: "",
     status: "draft" as CourseStatus,
     hasPrerequisiteTest: false,
     hasPostCourseTest: false,
@@ -64,12 +82,21 @@ export default function NewCoursePage() {
         description: form.description,
         category: form.category,
         duration: form.duration,
+        pricing: {
+          fee: form.fee,
+          cohortFee: form.cohortFee || undefined,
+          specialFee: form.specialFee || undefined,
+        },
         venue: {
           address: form.venueAddress,
           room: form.venueRoom,
         },
         capacity: form.capacity,
         waitlistCap: form.waitlistCap,
+        topics: form.topicsText
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
         instructorIds: [],
         status: form.status,
         prerequisiteTestId: form.hasPrerequisiteTest ? "test_placeholder" : undefined,
@@ -173,6 +200,70 @@ export default function NewCoursePage() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="topics" className="flex items-center gap-1.5">
+                    <Tag className="h-3.5 w-3.5" />
+                    Topics
+                  </Label>
+                  <Input
+                    id="topics"
+                    value={form.topicsText}
+                    onChange={(e) => updateField("topicsText", e.target.value)}
+                    placeholder="e.g. Python, Web Development, Machine Learning"
+                  />
+                  <p className="text-text-tertiary text-xs">Comma-separated list of key topics</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pricing */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Banknote className="text-accent-amber h-5 w-5" />
+                  Pricing (₦)
+                </CardTitle>
+                <CardDescription>Course fees in Nigerian Naira</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fee">Standard Fee</Label>
+                  <Input
+                    id="fee"
+                    type="number"
+                    min={0}
+                    step={1000}
+                    value={form.fee}
+                    onChange={(e) => updateField("fee", parseInt(e.target.value) || 0)}
+                    placeholder="e.g. 150000"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cohortFee">Cohort Fee (optional)</Label>
+                  <Input
+                    id="cohortFee"
+                    type="number"
+                    min={0}
+                    step={1000}
+                    value={form.cohortFee}
+                    onChange={(e) => updateField("cohortFee", parseInt(e.target.value) || 0)}
+                    placeholder="e.g. 50000"
+                  />
+                  <p className="text-text-tertiary text-xs">Fee for cohort-based enrollment</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="specialFee">Special Class Fee (optional)</Label>
+                  <Input
+                    id="specialFee"
+                    type="number"
+                    min={0}
+                    step={1000}
+                    value={form.specialFee}
+                    onChange={(e) => updateField("specialFee", parseInt(e.target.value) || 0)}
+                    placeholder="e.g. 100000"
+                  />
+                  <p className="text-text-tertiary text-xs">For special classes (3–5 students)</p>
                 </div>
               </CardContent>
             </Card>

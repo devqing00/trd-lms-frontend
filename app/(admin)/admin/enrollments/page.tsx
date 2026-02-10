@@ -46,7 +46,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEnrollments } from "@/lib/hooks/use-queries";
+import { useEnrollments, useUpdateEnrollmentStatus } from "@/lib/hooks/use-queries";
 import { useTableFilters } from "@/lib/hooks/use-table-filters";
 import { toast } from "sonner";
 import type { Enrollment, EnrollmentStatus } from "@/lib/types";
@@ -63,6 +63,7 @@ export default function EnrollmentsPage() {
     pageSize: 15,
   });
   const { data, isLoading } = useEnrollments(filters);
+  const updateStatus = useUpdateEnrollmentStatus();
   const [actionTarget, setActionTarget] = useState<{
     enrollment: Enrollment;
     action: "cancel" | "complete" | "reinstate";
@@ -71,14 +72,26 @@ export default function EnrollmentsPage() {
   function handleAction() {
     if (!actionTarget) return;
     const { enrollment, action } = actionTarget;
-    // Simulate mutation
-    const messages: Record<string, string> = {
-      cancel: `Enrollment for ${enrollment.userName} cancelled`,
-      complete: `${enrollment.userName} marked as completed`,
-      reinstate: `${enrollment.userName} re-enrolled`,
+    const statusMap: Record<string, "enrolled" | "completed" | "cancelled"> = {
+      cancel: "cancelled",
+      complete: "completed",
+      reinstate: "enrolled",
     };
-    toast.success(messages[action]);
-    setActionTarget(null);
+    const newStatus = statusMap[action] ?? "enrolled";
+    updateStatus.mutate(
+      { enrollmentId: enrollment.id, status: newStatus },
+      {
+        onSuccess: () => {
+          const messages: Record<string, string> = {
+            cancel: `Enrollment for ${enrollment.userName} cancelled`,
+            complete: `${enrollment.userName} marked as completed`,
+            reinstate: `${enrollment.userName} re-enrolled`,
+          };
+          toast.success(messages[action]);
+          setActionTarget(null);
+        },
+      }
+    );
   }
 
   return (

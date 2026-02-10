@@ -47,9 +47,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCertificatesAdmin, useRevokeCertificate } from "@/lib/hooks/use-queries";
+import {
+  useCertificatesAdmin,
+  useRevokeCertificate,
+  useGenerateCertificate,
+  useCourses,
+  useUsers,
+} from "@/lib/hooks/use-queries";
 import { useTableFilters } from "@/lib/hooks/use-table-filters";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
 import type { Certificate, CertificateStatus } from "@/lib/types";
 
 const STATUS_BADGE: Record<CertificateStatus, "success" | "warning" | "default"> = {
@@ -64,7 +71,13 @@ export default function CertificatesPage() {
   });
   const { data, isLoading } = useCertificatesAdmin(filters);
   const revokeCertificate = useRevokeCertificate();
+  const generateCertificate = useGenerateCertificate();
+  const { data: coursesData } = useCourses({ page: 1, pageSize: 100, search: "" });
+  const { data: usersData } = useUsers({ page: 1, pageSize: 100, search: "" });
   const [revokeTarget, setRevokeTarget] = useState<Certificate | null>(null);
+  const [generateOpen, setGenerateOpen] = useState(false);
+  const [genUserId, setGenUserId] = useState("");
+  const [genCourseId, setGenCourseId] = useState("");
 
   function handleRevoke() {
     if (!revokeTarget) return;
@@ -74,6 +87,24 @@ export default function CertificatesPage() {
         setRevokeTarget(null);
       },
     });
+  }
+
+  function handleGenerate() {
+    if (!genUserId || !genCourseId) {
+      toast.error("Select both a student and a course");
+      return;
+    }
+    generateCertificate.mutate(
+      { userId: genUserId, courseId: genCourseId },
+      {
+        onSuccess: () => {
+          toast.success("Certificate generated successfully");
+          setGenerateOpen(false);
+          setGenUserId("");
+          setGenCourseId("");
+        },
+      }
+    );
   }
 
   function copyVerificationUrl(cert: Certificate) {
@@ -91,6 +122,10 @@ export default function CertificatesPage() {
           </h1>
           <p className="text-text-secondary mt-1">View, verify, and manage issued certificates</p>
         </div>
+        <Button variant="primary" onClick={() => setGenerateOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Generate Certificate
+        </Button>
       </div>
 
       {/* Stats */}
@@ -325,6 +360,64 @@ export default function CertificatesPage() {
               disabled={revokeCertificate.isPending}
             >
               {revokeCertificate.isPending ? "Revoking…" : "Revoke"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Generate Certificate Dialog */}
+      <Dialog open={generateOpen} onOpenChange={setGenerateOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Generate Certificate</DialogTitle>
+            <DialogDescription>
+              Select a student and course to generate a completion certificate.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Student</Label>
+              <Select value={genUserId} onValueChange={setGenUserId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select student" />
+                </SelectTrigger>
+                <SelectContent>
+                  {usersData?.data
+                    .filter((u) => u.role === "student")
+                    .map((u) => (
+                      <SelectItem key={u.id} value={u.id}>
+                        {u.name} ({u.email})
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Course</Label>
+              <Select value={genCourseId} onValueChange={setGenCourseId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select course" />
+                </SelectTrigger>
+                <SelectContent>
+                  {coursesData?.data.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setGenerateOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleGenerate}
+              disabled={!genUserId || !genCourseId || generateCertificate.isPending}
+            >
+              {generateCertificate.isPending ? "Generating…" : "Generate"}
             </Button>
           </DialogFooter>
         </DialogContent>

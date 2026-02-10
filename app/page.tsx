@@ -14,19 +14,36 @@ import {
   FlaskConical,
   HeartPulse,
   Briefcase,
-  FileText,
   BarChart3,
-  Lightbulb,
   Settings,
   Play,
   Star,
   Zap,
   Globe,
+  Phone,
+  BrainCircuit,
+  Shield,
+  Megaphone,
+  CalendarDays,
+  Banknote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LandingNav } from "@/components/landing-nav";
 import { cn } from "@/lib/utils";
+import {
+  APPLICATION_FORM_FEE,
+  ENROLLMENT_POLICY,
+  CONTACT_PHONES,
+  AVAILABLE_FACILITIES,
+  SPECIAL_CLASS_MIN_STUDENTS,
+  SPECIAL_CLASS_MAX_STUDENTS,
+} from "@/lib/types";
+
+/** Format Naira */
+function formatNaira(amount: number): string {
+  return `\u20A6${amount.toLocaleString()}`;
+}
 
 /* ─── Category Data ─── */
 const categories = [
@@ -34,51 +51,52 @@ const categories = [
     icon: Monitor,
     label: "ICT & Digital Skills",
     color: "bg-blue-500/15 text-blue-500",
-    count: "24 Courses",
-    desc: "Master essential digital competencies for the modern workplace.",
+    count: "15+ Courses",
+    desc: "From digital literacy to cybersecurity — master essential tech competencies.",
+  },
+  {
+    icon: BarChart3,
+    label: "Data & Analytics",
+    color: "bg-cyan-500/15 text-cyan-500",
+    count: "8+ Courses",
+    desc: "Data analysis, data science, SPSS, Power BI, and spatial analysis.",
+  },
+  {
+    icon: BrainCircuit,
+    label: "AI & Emerging Tech",
+    color: "bg-violet-500/15 text-violet-500",
+    count: "2 Courses",
+  },
+  {
+    icon: Shield,
+    label: "Cybersecurity",
+    color: "bg-rose-500/15 text-rose-500",
+    count: "1 Course",
   },
   {
     icon: FlaskConical,
     label: "Research Methods",
     color: "bg-purple-500/15 text-purple-500",
-    count: "18 Courses",
+    count: "4 Courses",
+  },
+  {
+    icon: Megaphone,
+    label: "Digital Marketing",
+    color: "bg-orange-500/15 text-orange-500",
+    count: "1 Course",
+  },
+  {
+    icon: Briefcase,
+    label: "Professional Dev",
+    color: "bg-amber-500/15 text-amber-500",
+    count: "6+ Courses",
+    desc: "Graphics, publishing, presentations, and professional communication.",
   },
   {
     icon: HeartPulse,
     label: "Health & Safety",
-    color: "bg-rose-500/15 text-rose-500",
-    count: "15 Courses",
-  },
-  {
-    icon: Briefcase,
-    label: "Management",
-    color: "bg-amber-500/15 text-amber-500",
-    count: "21 Courses",
-  },
-  {
-    icon: FileText,
-    label: "Compliance",
     color: "bg-emerald-500/15 text-emerald-500",
-    count: "12 Courses",
-  },
-  {
-    icon: BarChart3,
-    label: "Data Analytics",
-    color: "bg-cyan-500/15 text-cyan-500",
-    count: "16 Courses",
-  },
-  {
-    icon: Lightbulb,
-    label: "Innovation Lab",
-    color: "bg-orange-500/15 text-orange-500",
-    count: "9 Courses",
-    desc: "Explore cutting-edge ideas and experimental training modules.",
-  },
-  {
-    icon: Settings,
-    label: "Technical Skills",
-    color: "bg-indigo-500/15 text-indigo-500",
-    count: "20 Courses",
+    count: "4 Courses",
   },
 ];
 
@@ -280,7 +298,7 @@ export default function Home() {
                 </div>
                 <div className="mt-6">
                   <p className="font-display text-text-primary text-3xl font-bold tracking-tight">
-                    500+
+                    40+
                   </p>
                   <p className="text-accent-blue mt-1 text-sm">Courses Available</p>
                 </div>
@@ -706,6 +724,89 @@ export default function Home() {
         </section>
 
         {/* ═══════════════════════════════════════════
+            ENROLLMENT INFO & FACILITIES
+            ═══════════════════════════════════════════ */}
+        <section className="border-border-default border-t-2 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex flex-col items-center text-center">
+              <Badge variant="info" className="mb-4">
+                <CalendarDays className="mr-1 h-3 w-3" />
+                Enrollment Information
+              </Badge>
+              <h2 className="font-display text-text-primary text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+                How to Get Started
+              </h2>
+              <p className="text-text-secondary mt-3 max-w-2xl">{ENROLLMENT_POLICY}</p>
+            </div>
+
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Application Fee */}
+              <div className="rounded-card border-accent-amber/30 bg-accent-amber/5 shadow-hard-card border-2 p-6">
+                <div className="bg-accent-amber/10 mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
+                  <Banknote className="text-accent-amber h-6 w-6" />
+                </div>
+                <h3 className="font-display text-text-primary text-lg font-bold">
+                  Application Form
+                </h3>
+                <p className="text-accent-amber mt-1 text-2xl font-bold">
+                  {formatNaira(APPLICATION_FORM_FEE)}
+                </p>
+                <p className="text-text-secondary mt-2 text-sm">
+                  One-time application form fee for all courses.
+                </p>
+              </div>
+
+              {/* Special Class */}
+              <div className="rounded-card border-accent-purple/30 bg-accent-purple/5 shadow-hard-card border-2 p-6">
+                <div className="bg-accent-purple/10 mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
+                  <Users className="text-accent-purple h-6 w-6" />
+                </div>
+                <h3 className="font-display text-text-primary text-lg font-bold">
+                  Special Class Package
+                </h3>
+                <p className="text-text-secondary mt-2 text-sm">
+                  Minimum of {SPECIAL_CLASS_MIN_STUDENTS} and maximum of{" "}
+                  {SPECIAL_CLASS_MAX_STUDENTS} students per special class. Premium pricing with
+                  dedicated instruction.
+                </p>
+              </div>
+
+              {/* Enrollment Schedule */}
+              <div className="rounded-card border-accent-green/30 bg-accent-green/5 shadow-hard-card border-2 p-6">
+                <div className="bg-accent-green/10 mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
+                  <CalendarDays className="text-accent-green h-6 w-6" />
+                </div>
+                <h3 className="font-display text-text-primary text-lg font-bold">
+                  Monthly Enrollment
+                </h3>
+                <p className="text-text-secondary mt-2 text-sm">
+                  Classes begin at the beginning of each new month. Enroll anytime and join the next
+                  cohort.
+                </p>
+              </div>
+            </div>
+
+            {/* Facilities */}
+            <div className="mt-12">
+              <h3 className="font-display text-text-primary text-center text-xl font-bold">
+                Available Facilities
+              </h3>
+              <div className="mt-6 flex flex-wrap justify-center gap-4">
+                {AVAILABLE_FACILITIES.map((facility) => (
+                  <div
+                    key={facility}
+                    className="rounded-card border-border-default bg-bg-secondary shadow-hard-card flex items-center gap-3 border-2 px-5 py-3"
+                  >
+                    <CheckCircle2 className="text-accent-green h-5 w-5 shrink-0" />
+                    <span className="text-text-primary text-sm font-medium">{facility}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════
             CTA Section — Theme-aware, no hardcoded bg
             ═══════════════════════════════════════════ */}
         <section className="border-border-default bg-bg-secondary border-t-2 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
@@ -819,6 +920,16 @@ export default function Home() {
               <div className="flex flex-col gap-2">
                 <p className="text-text-tertiary text-sm">ITeMS, University of Ibadan</p>
                 <p className="text-text-tertiary text-sm">Ibadan, Oyo State, Nigeria</p>
+                {CONTACT_PHONES.map((phone) => (
+                  <a
+                    key={phone}
+                    href={`tel:${phone.replace(/-/g, "")}`}
+                    className="text-text-tertiary hover:text-accent-blue flex items-center gap-1.5 text-sm transition-colors"
+                  >
+                    <Phone className="h-3 w-3" />
+                    {phone}
+                  </a>
+                ))}
               </div>
             </div>
           </div>

@@ -17,6 +17,8 @@ import {
   X,
   HelpCircle,
   Award,
+  ClipboardList,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -31,7 +33,9 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Users", href: "/admin/users", icon: Users },
   { label: "Courses", href: "/admin/courses", icon: BookOpen },
+  { label: "Cohorts", href: "/admin/cohorts", icon: CalendarDays },
   { label: "Questions", href: "/admin/questions", icon: HelpCircle },
+  { label: "Tests", href: "/admin/tests", icon: ClipboardList },
   { label: "Waitlist", href: "/admin/waitlist", icon: ListOrdered },
   { label: "Enrollments", href: "/admin/enrollments", icon: GraduationCap },
   { label: "Certificates", href: "/admin/certificates", icon: Award },

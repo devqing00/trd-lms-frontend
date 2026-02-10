@@ -90,6 +90,13 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
     );
   }
 
+  const formatNaira = (amount: number) =>
+    new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      maximumFractionDigits: 0,
+    }).format(amount);
+
   const fillPercent =
     course.capacity > 0 ? Math.round((course.enrolledCount / course.capacity) * 100) : 0;
 
@@ -350,6 +357,67 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                   })}
                 </p>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Pricing & Topics */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Pricing & Topics</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-text-tertiary text-xs font-medium tracking-wider uppercase">
+                  Standard Fee
+                </p>
+                <p className="text-accent-blue mt-1 text-lg font-bold">
+                  {formatNaira(course.pricing.fee)}
+                </p>
+              </div>
+              {course.pricing.specialFee && (
+                <>
+                  <Separator />
+                  <div>
+                    <p className="text-text-tertiary text-xs font-medium tracking-wider uppercase">
+                      Special Class Fee
+                    </p>
+                    <p className="text-accent-purple mt-1 text-sm font-medium">
+                      {formatNaira(course.pricing.specialFee)}
+                    </p>
+                    <p className="text-text-tertiary text-xs">For groups of 3–5 students</p>
+                  </div>
+                </>
+              )}
+              {course.pricing.cohortFee && (
+                <>
+                  <Separator />
+                  <div>
+                    <p className="text-text-tertiary text-xs font-medium tracking-wider uppercase">
+                      Cohort Fee
+                    </p>
+                    <p className="text-accent-green mt-1 text-sm font-medium">
+                      {formatNaira(course.pricing.cohortFee)}
+                    </p>
+                  </div>
+                </>
+              )}
+              {course.topics && course.topics.length > 0 && (
+                <>
+                  <Separator />
+                  <div>
+                    <p className="text-text-tertiary text-xs font-medium tracking-wider uppercase">
+                      Topics
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {course.topics.map((topic) => (
+                        <Badge key={topic} variant="outline" className="text-xs">
+                          {topic}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
 

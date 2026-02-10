@@ -8,6 +8,7 @@ import type {
   User,
   Course,
   Enrollment,
+  EnrollmentStatus,
   WaitlistEntry,
   Cohort,
   Certificate,
@@ -110,18 +111,172 @@ export const CATEGORIES = [
   "Professional Development",
 ];
 
-const COURSE_TITLES: {
+interface CourseSeed {
   title: string;
   description: string;
   category: string;
   duration: string;
-}[] = [
+  topics?: string[];
+  pricing: { fee: number; cohortFee?: number; specialFee?: number };
+}
+
+const COURSE_TITLES: CourseSeed[] = [
+  // ====================================================
+  // Official TRD Available Courses (from course catalog)
+  // ====================================================
+  {
+    title: "Tech Odyssey",
+    description:
+      "An immersive 3-month programme covering web development (HTML, CSS, JavaScript), Python programming, graphics design, and digital literacy. Designed to build well-rounded tech professionals from the ground up.",
+    category: "ICT & Digital Literacy",
+    duration: "3 months",
+    topics: ["HTML", "CSS", "JavaScript", "Python", "Graphics", "Digital Literacy"],
+    pricing: { fee: 150000 },
+  },
+  {
+    title: "Web Development",
+    description:
+      "A comprehensive 3-month course on modern web development covering HTML5, CSS3, JavaScript (ES6+), responsive design, and a capstone project. Students build real-world websites and deploy them to production environments.",
+    category: "ICT & Digital Literacy",
+    duration: "3 months",
+    topics: ["HTML", "CSS", "JavaScript", "Project"],
+    pricing: { fee: 200000 },
+  },
+  {
+    title: "Python Programming",
+    description:
+      "Structured 3-month programme covering Python fundamentals, data structures, object-oriented programming, web frameworks, automation, and scripting. Suitable for beginners and intermediate learners.",
+    category: "ICT & Digital Literacy",
+    duration: "3 months",
+    topics: ["Python Fundamentals", "OOP", "Web Frameworks", "Automation"],
+    pricing: { fee: 150000 },
+  },
+  {
+    title: "Digital Literacy",
+    description:
+      "A 1-month foundational course covering basic computer operations, online security, digital productivity tools, and online collaborative tools. Perfect for beginners looking to build essential digital skills.",
+    category: "ICT & Digital Literacy",
+    duration: "1 month",
+    topics: [
+      "Basic Computer Operations",
+      "Online Security",
+      "Digital Productivity Tools",
+      "Online Collaborative Tools",
+    ],
+    pricing: { fee: 50000, cohortFee: 50000, specialFee: 100000 },
+  },
+  {
+    title: "ArcGIS & Spatial Analysis",
+    description:
+      "A 1-month intensive course on Geographic Information Systems using ArcGIS. Covers spatial data collection, map creation, geoprocessing, spatial analysis techniques, and data visualisation for research and planning.",
+    category: "Data & Analytics",
+    duration: "1 month",
+    topics: ["ArcGIS", "Spatial Analysis", "Map Creation", "Geoprocessing"],
+    pricing: { fee: 50000 },
+  },
+  {
+    title: "Data Analysis / Data Analytics",
+    description:
+      "A 5-week practical course covering data analysis fundamentals using SPSS, Microsoft Excel, and Power BI. Students learn data cleaning, statistical analysis, pivot tables, dashboards, and data-driven decision making.",
+    category: "Data & Analytics",
+    duration: "5 weeks",
+    topics: ["Basic Computer Operations", "SPSS", "Excel", "Power BI"],
+    pricing: { fee: 80000, specialFee: 150000 },
+  },
+  {
+    title: "Data Processing",
+    description:
+      "An 8-week course on data collection, entry, cleaning, coding, and processing using Computer Operations, Excel, Word, PowerPoint, and SPSS. Covers data quality assurance and preparing datasets for analysis.",
+    category: "Data & Analytics",
+    duration: "8 weeks",
+    topics: ["Computer Operations", "Excel", "Word", "PowerPoint", "SPSS"],
+    pricing: { fee: 100000 },
+  },
+  {
+    title: "Digital Productivity Tools",
+    description:
+      "A 1-month hands-on course covering basic computer operations, online collaboration, and mastery of Microsoft Office suite — Word, Excel, and PowerPoint — for professional productivity.",
+    category: "ICT & Digital Literacy",
+    duration: "1 month",
+    topics: ["Basic Computer Operations", "Online Collaboration", "Word", "Excel", "PowerPoint"],
+    pricing: { fee: 80000, cohortFee: 80000, specialFee: 150000 },
+  },
+  {
+    title: "Generative AI",
+    description:
+      "A 1-month cutting-edge course exploring generative AI technologies including large language models, prompt engineering, AI-powered content creation, and practical applications of AI tools in professional workflows.",
+    category: "ICT & Digital Literacy",
+    duration: "1 month",
+    topics: ["Large Language Models", "Prompt Engineering", "AI Content Creation", "AI Tools"],
+    pricing: { fee: 100000 },
+  },
+  {
+    title: "Routing & Wireless Networking Using MikroTik OS",
+    description:
+      "A 2-week intensive course on router configuration, wireless access point setup, firewall rules, bandwidth management, hotspot configuration, and network monitoring using MikroTik RouterOS.",
+    category: "ICT & Digital Literacy",
+    duration: "2 weeks",
+    topics: [
+      "MikroTik RouterOS",
+      "Wireless Networking",
+      "Routing",
+      "Firewall",
+      "Bandwidth Management",
+    ],
+    pricing: { fee: 100000 },
+  },
+  {
+    title: "Basic Computer Networking",
+    description:
+      "A 4-week course covering networking fundamentals including OSI model, TCP/IP, IP addressing, subnetting, DNS, DHCP, network troubleshooting, and basic network security concepts.",
+    category: "ICT & Digital Literacy",
+    duration: "4 weeks",
+    topics: ["OSI Model", "TCP/IP", "IP Addressing", "Subnetting", "DNS/DHCP", "Network Security"],
+    pricing: { fee: 80000, specialFee: 150000 },
+  },
+  {
+    title: "Data Science",
+    description:
+      "A comprehensive 4-month programme covering statistics, Python for data science (pandas, NumPy, scikit-learn), machine learning fundamentals, data visualisation, and real-world data science projects.",
+    category: "Data & Analytics",
+    duration: "4 months",
+    topics: ["Statistics", "Python", "Machine Learning", "Data Visualisation", "Projects"],
+    pricing: { fee: 300000 },
+  },
+  {
+    title: "Cybersecurity",
+    description:
+      "A 4-month intensive programme covering network security, ethical hacking, penetration testing, incident response, security frameworks (NIST, ISO 27001), cryptography, and security operations.",
+    category: "ICT & Digital Literacy",
+    duration: "4 months",
+    topics: [
+      "Network Security",
+      "Ethical Hacking",
+      "Penetration Testing",
+      "Incident Response",
+      "Cryptography",
+    ],
+    pricing: { fee: 300000 },
+  },
+  {
+    title: "Digital Marketing",
+    description:
+      "A 4-month programme covering SEO, social media marketing, content strategy, email marketing, Google Ads, analytics, and building comprehensive digital marketing campaigns.",
+    category: "Professional Development",
+    duration: "4 months",
+    topics: ["SEO", "Social Media Marketing", "Content Strategy", "Google Ads", "Analytics"],
+    pricing: { fee: 300000 },
+  },
+  // ====================================================
+  // Additional TRD Workshop Courses
+  // ====================================================
   {
     title: "ICT Proficiency Certification",
     description:
       "Comprehensive digital literacy programme covering office productivity tools (Word, Excel, PowerPoint), email management, cloud collaboration, and basic cybersecurity awareness. Designed for University of Ibadan staff seeking ICT competency certification.",
     category: "ICT & Digital Literacy",
     duration: "5 Days",
+    pricing: { fee: 50000, specialFee: 100000 },
   },
   {
     title: "Research Methodology & Academic Writing",
@@ -129,6 +284,7 @@ const COURSE_TITLES: {
       "Intensive workshop on research design, literature review techniques, citation management with Mendeley/Zotero, and scientific writing standards. Includes hands-on sessions on using Google Scholar, Scopus, and Web of Science databases.",
     category: "Research & Academic Writing",
     duration: "3 Days",
+    pricing: { fee: 50000 },
   },
   {
     title: "Laboratory Safety & Chemical Handling",
@@ -136,6 +292,7 @@ const COURSE_TITLES: {
       "Mandatory safety training for laboratory personnel covering hazard identification, MSDS interpretation, proper PPE usage, chemical storage protocols, spill response procedures, and emergency evacuation drills specific to UI laboratories.",
     category: "Health & Safety",
     duration: "2 Days",
+    pricing: { fee: 40000 },
   },
   {
     title: "Data Analysis with Python & SPSS",
@@ -143,6 +300,7 @@ const COURSE_TITLES: {
       "Practical course on statistical analysis using Python (pandas, matplotlib, scipy) and SPSS. Covers descriptive statistics, hypothesis testing, regression analysis, and data visualisation for research and institutional reporting.",
     category: "Data & Analytics",
     duration: "5 Days",
+    pricing: { fee: 80000, specialFee: 150000 },
   },
   {
     title: "Fire Safety & Emergency Response",
@@ -150,6 +308,7 @@ const COURSE_TITLES: {
       "Hands-on training on fire prevention, extinguisher operation (ABC types), evacuation procedures, first aid basics, and emergency assembly point protocols aligned with University of Ibadan campus safety standards.",
     category: "Health & Safety",
     duration: "1 Day",
+    pricing: { fee: 30000 },
   },
   {
     title: "Leadership & Administrative Excellence",
@@ -157,6 +316,7 @@ const COURSE_TITLES: {
       "Professional development programme for senior non-academic staff and heads of units. Covers strategic planning, conflict resolution, team management, performance appraisal techniques, and effective committee leadership.",
     category: "Leadership & Management",
     duration: "3 Days",
+    pricing: { fee: 60000 },
   },
   {
     title: "E-Learning Content Development",
@@ -164,6 +324,7 @@ const COURSE_TITLES: {
       "Training on creating engaging digital learning materials using Moodle, Canva, and OBS Studio. Participants learn instructional design principles, video recording techniques, and how to structure blended learning modules.",
     category: "ICT & Digital Literacy",
     duration: "3 Days",
+    pricing: { fee: 50000 },
   },
   {
     title: "Advanced Excel & Data Management",
@@ -171,6 +332,7 @@ const COURSE_TITLES: {
       "Intermediate-to-advanced Microsoft Excel training covering pivot tables, VLOOKUP/XLOOKUP, conditional formatting, data validation, macros, and dashboard creation for administrative and research data management.",
     category: "Data & Analytics",
     duration: "3 Days",
+    pricing: { fee: 60000 },
   },
   {
     title: "Biosafety & Infection Prevention",
@@ -178,6 +340,7 @@ const COURSE_TITLES: {
       "Specialised training for healthcare and laboratory workers on biosafety levels (BSL-1 to BSL-3), proper specimen handling, autoclave operation, waste segregation, and infection prevention protocols per WHO guidelines.",
     category: "Health & Safety",
     duration: "2 Days",
+    pricing: { fee: 40000 },
   },
   {
     title: "Grant Writing & Research Funding",
@@ -185,6 +348,7 @@ const COURSE_TITLES: {
       "Workshop on identifying funding opportunities (TETFund, NRF, PTDF, international grants), writing competitive grant proposals, developing budgets, and understanding reporting and compliance requirements for funded projects.",
     category: "Research & Academic Writing",
     duration: "2 Days",
+    pricing: { fee: 50000 },
   },
   {
     title: "Network & Systems Administration",
@@ -192,6 +356,7 @@ const COURSE_TITLES: {
       "Technical training on LAN/WAN configuration, server management (Windows Server & Linux), Active Directory, DNS/DHCP setup, network security practices, and troubleshooting for ITeMS and faculty IT support staff.",
     category: "ICT & Digital Literacy",
     duration: "5 Days",
+    pricing: { fee: 80000 },
   },
   {
     title: "Occupational Health & Ergonomics",
@@ -199,6 +364,7 @@ const COURSE_TITLES: {
       "Training on workplace ergonomics, repetitive strain injury prevention, proper workstation setup, mental health awareness, and stress management techniques for office-based and laboratory personnel at the University of Ibadan.",
     category: "Health & Safety",
     duration: "1 Day",
+    pricing: { fee: 25000 },
   },
   // === NEW: Real TRD Specialized Workshop Courses ===
   {
@@ -207,6 +373,7 @@ const COURSE_TITLES: {
       "Hands-on workshop on building dynamic web applications using Linux, Apache, MySQL, and PHP (LAMP). Covers server setup, database design, RESTful APIs, authentication, and deploying applications to production servers.",
     category: "ICT & Digital Literacy",
     duration: "5 Days",
+    pricing: { fee: 80000 },
   },
   {
     title: "Linux & Unix System Administration",
@@ -214,6 +381,7 @@ const COURSE_TITLES: {
       "Comprehensive training on Linux and Unix operating systems covering shell scripting, file system management, user administration, package management, cron automation, SSH, and server hardening best practices.",
     category: "ICT & Digital Literacy",
     duration: "5 Days",
+    pricing: { fee: 80000 },
   },
   {
     title: "Routing & Wireless Network Configuration",
@@ -221,6 +389,7 @@ const COURSE_TITLES: {
       "Practical course on configuring routers, switches, and wireless access points. Covers OSPF, EIGRP, BGP routing protocols, VLAN management, wireless security (WPA3), and campus network design principles using Cisco and MikroTik equipment.",
     category: "ICT & Digital Literacy",
     duration: "5 Days",
+    pricing: { fee: 100000 },
   },
   {
     title: "Computer Networks Fundamentals",
@@ -228,6 +397,7 @@ const COURSE_TITLES: {
       "Entry-level to intermediate course covering OSI model, TCP/IP stack, IP addressing, subnetting, DNS, DHCP, network troubleshooting tools (ping, traceroute, Wireshark), and basic network security concepts.",
     category: "ICT & Digital Literacy",
     duration: "3 Days",
+    pricing: { fee: 60000 },
   },
   {
     title: "Image Processing, Graphics & Animation",
@@ -235,6 +405,7 @@ const COURSE_TITLES: {
       "Training on digital image editing with Adobe Photoshop, vector graphics with Illustrator/Inkscape, and 2D animation fundamentals. Participants create flyers, banners, logos, and animated presentations for academic and professional use.",
     category: "Professional Development",
     duration: "5 Days",
+    pricing: { fee: 70000 },
   },
   {
     title: "Web Design & Graphics",
@@ -242,6 +413,7 @@ const COURSE_TITLES: {
       "Comprehensive course on modern web design using HTML5, CSS3, JavaScript, and responsive frameworks. Includes UI/UX design principles, Adobe XD/Figma prototyping, and deploying websites to cloud hosting platforms.",
     category: "ICT & Digital Literacy",
     duration: "5 Days",
+    pricing: { fee: 80000 },
   },
   {
     title: "ICT in Course Registration & Records",
@@ -249,6 +421,7 @@ const COURSE_TITLES: {
       "Specialised training for university registry and academic staff on using ICT systems for course registration, student records management, transcript generation, and integrating with the university portal and student information systems.",
     category: "ICT & Digital Literacy",
     duration: "2 Days",
+    pricing: { fee: 40000 },
   },
   {
     title: "Exam Preparation & Result Processing",
@@ -256,6 +429,7 @@ const COURSE_TITLES: {
       "Training on using ICT tools for exam management including computer-based test (CBT) setup, OMR sheet processing, result computation, grade-point calculation, and automated transcript generation for faculties and departments.",
     category: "ICT & Digital Literacy",
     duration: "2 Days",
+    pricing: { fee: 40000 },
   },
   {
     title: "Mail Management & Professional Communication",
@@ -263,6 +437,7 @@ const COURSE_TITLES: {
       "Training on corporate email management using Microsoft Outlook and Google Workspace. Covers email etiquette, calendar management, mail merge, digital correspondence protocols, and managing shared mailboxes for departmental communication.",
     category: "Professional Development",
     duration: "1 Day",
+    pricing: { fee: 25000 },
   },
   {
     title: "Learning Management System (LMS) Module",
@@ -270,6 +445,7 @@ const COURSE_TITLES: {
       "In-depth training on using and administering the TRD Learning Management System. Covers course creation, enrollment management, attendance tracking via QR codes, assessment setup, certificate generation, and analytics dashboards.",
     category: "ICT & Digital Literacy",
     duration: "2 Days",
+    pricing: { fee: 40000 },
   },
   {
     title: "Microsoft Excel for Professionals",
@@ -277,6 +453,7 @@ const COURSE_TITLES: {
       "Structured Excel training from basics to advanced level. Covers data entry, formatting, formulas (SUM, IF, VLOOKUP), pivot tables, charts, data validation, conditional formatting, and introduction to Power Query for data transformation.",
     category: "Data & Analytics",
     duration: "3 Days",
+    pricing: { fee: 60000 },
   },
   {
     title: "Microsoft Word Mastery",
@@ -284,6 +461,7 @@ const COURSE_TITLES: {
       "Complete Microsoft Word training covering document formatting, styles & templates, table of contents, mail merge, track changes, referencing, and creating professional reports, memos, and academic documents to university standards.",
     category: "Professional Development",
     duration: "2 Days",
+    pricing: { fee: 40000 },
   },
   {
     title: "Microsoft PowerPoint for Impactful Presentations",
@@ -291,6 +469,7 @@ const COURSE_TITLES: {
       "Training on creating compelling presentations with PowerPoint. Covers slide design principles, master slides, animations, transitions, embedding multimedia, presenter view, and delivering effective academic and boardroom presentations.",
     category: "Professional Development",
     duration: "1 Day",
+    pricing: { fee: 25000 },
   },
   {
     title: "Data Processing & Information Management",
@@ -298,6 +477,7 @@ const COURSE_TITLES: {
       "Course on data collection, cleaning, coding, entry, and processing using spreadsheets, Google Forms, KoBoToolbox, and ODK. Covers data quality assurance, validation rules, and preparing datasets for analysis in research and administrative contexts.",
     category: "Data & Analytics",
     duration: "3 Days",
+    pricing: { fee: 60000 },
   },
   {
     title: "Desktop Publishing & Document Design",
@@ -305,6 +485,7 @@ const COURSE_TITLES: {
       "Training on professional document layout and design using Microsoft Publisher, Adobe InDesign, and Canva. Participants learn to create newsletters, brochures, posters, certificates, annual reports, and branded materials for departments.",
     category: "Professional Development",
     duration: "2 Days",
+    pricing: { fee: 45000 },
   },
   {
     title: "Research Tools & Data Analysis (SPSS, STATA, R)",
@@ -312,6 +493,7 @@ const COURSE_TITLES: {
       "Advanced research data analysis workshop covering SPSS, STATA, and R. Includes data import/cleaning, descriptive and inferential statistics, regression, factor analysis, and generating publication-ready tables and charts for theses and journals.",
     category: "Data & Analytics",
     duration: "5 Days",
+    pricing: { fee: 80000, specialFee: 150000 },
   },
   {
     title: "CSPRO & EPIDATA for Survey Data Management",
@@ -319,6 +501,7 @@ const COURSE_TITLES: {
       "Specialised course on using CSPro and EpiData for designing data entry screens, implementing skip patterns, validation checks, and batch editing for large-scale surveys. Covers data export to SPSS/STATA and basic tabulation.",
     category: "Data & Analytics",
     duration: "3 Days",
+    pricing: { fee: 60000 },
   },
   {
     title: "EPI INFO & SAS for Epidemiological Research",
@@ -326,6 +509,7 @@ const COURSE_TITLES: {
       "Training on epidemiological data analysis using Epi Info and SAS. Covers outbreak investigation workflows, 2×2 tables, odds ratios, relative risk calculations, survival analysis, and report generation for public health research at UI and UCH.",
     category: "Data & Analytics",
     duration: "3 Days",
+    pricing: { fee: 60000 },
   },
 ];
 
@@ -2477,6 +2661,8 @@ export const mockCourses: Course[] = COURSE_TITLES.map((seed, i) => {
     description: seed.description,
     category: seed.category,
     duration: seed.duration,
+    topics: seed.topics,
+    pricing: seed.pricing,
     venue: randomItem(VENUES),
     capacity,
     waitlistCap,
@@ -2484,7 +2670,7 @@ export const mockCourses: Course[] = COURSE_TITLES.map((seed, i) => {
       .filter((u) => u.role === "instructor")
       .slice(0, Math.floor(1 + Math.random() * 2))
       .map((u) => u.id),
-    status: i < 10 ? "published" : randomItem(["draft", "archived"] as const),
+    status: i < 14 ? "published" : randomItem(["published", "draft", "archived"] as const),
     prerequisiteTestId: Math.random() > 0.3 ? `test_${randomId()}` : undefined,
     postCourseTestId: `posttest_${randomId()}`,
     modules: modulesByTitle[seed.title] ?? [
@@ -2939,6 +3125,19 @@ export async function enrollInCourse(courseId: string): Promise<Enrollment> {
   };
   mockEnrollments.push(enrollment);
   return enrollment;
+}
+
+export async function updateEnrollmentStatus(
+  enrollmentId: string,
+  status: EnrollmentStatus
+): Promise<Enrollment> {
+  await delay();
+  const enrollment = mockEnrollments.find((e) => e.id === enrollmentId);
+  if (!enrollment) throw new Error("Enrollment not found");
+  enrollment.status = status;
+  enrollment.updatedAt = new Date().toISOString();
+  if (status === "completed") enrollment.completedAt = new Date().toISOString();
+  return { ...enrollment };
 }
 
 export async function fetchCertificateByNumber(certNumber: string): Promise<Certificate | null> {

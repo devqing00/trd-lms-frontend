@@ -35,6 +35,11 @@ import {
 import { fetchPublishedCourses, fetchStudentEnrollments } from "@/lib/mock-data";
 import type { Course, Enrollment } from "@/lib/types";
 
+/** Format Naira */
+function formatNaira(amount: number): string {
+  return `\u20A6${amount.toLocaleString()}`;
+}
+
 const CATEGORIES = [
   "ICT & Digital Literacy",
   "Research & Academic Writing",
@@ -269,6 +274,36 @@ export default function CourseCatalogPage() {
                   </CardHeader>
 
                   <CardContent className="mt-auto space-y-3">
+                    {/* Pricing */}
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-accent-blue text-lg font-bold">
+                        {formatNaira(course.pricing.fee)}
+                      </span>
+                      {course.pricing.specialFee && (
+                        <span className="text-text-tertiary text-xs">
+                          Special: {formatNaira(course.pricing.specialFee)}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Topics */}
+                    {course.topics && course.topics.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {course.topics.slice(0, 3).map((topic) => (
+                          <span
+                            key={topic}
+                            className="bg-bg-tertiary text-text-tertiary rounded-md px-1.5 py-0.5 text-[10px]"
+                          >
+                            {topic}
+                          </span>
+                        ))}
+                        {course.topics.length > 3 && (
+                          <span className="text-text-tertiary text-[10px]">
+                            +{course.topics.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <div className="text-text-tertiary flex flex-wrap gap-3 text-xs">
                       <span className="flex items-center gap-1">
                         <Clock size={14} />
@@ -334,6 +369,9 @@ export default function CourseCatalogPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="text-text-primary truncate font-medium">{course.title}</p>
+                      <span className="text-accent-blue text-sm font-bold">
+                        {formatNaira(course.pricing.fee)}
+                      </span>
                       {status && (
                         <Badge
                           variant="outline"

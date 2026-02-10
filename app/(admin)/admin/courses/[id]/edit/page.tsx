@@ -4,7 +4,17 @@ import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { ArrowLeft, BookOpen, MapPin, Users, Clock, Save, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  MapPin,
+  Users,
+  Clock,
+  Save,
+  Trash2,
+  Banknote,
+  Tag,
+} from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,7 +62,21 @@ const CATEGORIES = [
   "Professional Development",
 ];
 
-const DURATIONS = ["1 Day", "2 Days", "3 Days", "5 Days", "1 Week", "2 Weeks"];
+const DURATIONS = [
+  "1 Day",
+  "2 Days",
+  "3 Days",
+  "5 Days",
+  "1 Week",
+  "2 Weeks",
+  "4 Weeks",
+  "5 Weeks",
+  "8 Weeks",
+  "1 month",
+  "2 months",
+  "3 months",
+  "4 months",
+];
 
 export default function CourseEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -89,6 +113,10 @@ function CourseEditForm({
     venueRoom: course.venue.room,
     capacity: course.capacity,
     waitlistCap: course.waitlistCap,
+    fee: course.pricing.fee,
+    cohortFee: course.pricing.cohortFee ?? 0,
+    specialFee: course.pricing.specialFee ?? 0,
+    topicsText: (course.topics ?? []).join(", "),
     status: course.status,
     hasPrerequisiteTest: !!course.prerequisiteTestId,
     hasPostCourseTest: !!course.postCourseTestId,
@@ -107,6 +135,15 @@ function CourseEditForm({
         description: form.description,
         category: form.category,
         duration: form.duration,
+        pricing: {
+          fee: form.fee,
+          cohortFee: form.cohortFee || undefined,
+          specialFee: form.specialFee || undefined,
+        },
+        topics: form.topicsText
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
         venue: {
           address: form.venueAddress,
           room: form.venueRoom,
@@ -236,6 +273,19 @@ function CourseEditForm({
                     </Select>
                   </div>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="topics" className="flex items-center gap-1.5">
+                    <Tag className="h-3.5 w-3.5" />
+                    Topics
+                  </Label>
+                  <Input
+                    id="topics"
+                    value={form.topicsText}
+                    onChange={(e) => updateField("topicsText", e.target.value)}
+                    placeholder="e.g. Python, Web Development, Machine Learning"
+                  />
+                  <p className="text-text-tertiary text-xs">Comma-separated list of key topics</p>
+                </div>
               </CardContent>
             </Card>
 
@@ -266,6 +316,53 @@ function CourseEditForm({
 
           {/* Sidebar */}
           <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Banknote className="text-accent-green h-5 w-5" />
+                  Pricing (₦)
+                </CardTitle>
+                <CardDescription>Course fees in Naira</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fee">Standard Fee</Label>
+                  <Input
+                    id="fee"
+                    type="number"
+                    min={0}
+                    step={1000}
+                    value={form.fee}
+                    onChange={(e) => updateField("fee", parseInt(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cohortFee">Cohort Fee</Label>
+                  <Input
+                    id="cohortFee"
+                    type="number"
+                    min={0}
+                    step={1000}
+                    value={form.cohortFee}
+                    onChange={(e) => updateField("cohortFee", parseInt(e.target.value) || 0)}
+                  />
+                  <p className="text-text-tertiary text-xs">Leave 0 if not applicable</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="specialFee">Special Class Fee</Label>
+                  <Input
+                    id="specialFee"
+                    type="number"
+                    min={0}
+                    step={1000}
+                    value={form.specialFee}
+                    onChange={(e) => updateField("specialFee", parseInt(e.target.value) || 0)}
+                  />
+                  <p className="text-text-tertiary text-xs">For groups of 3–5 students</p>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
